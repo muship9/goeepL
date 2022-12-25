@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/urfave/cli"
+	"log"
 	"os"
 )
 
@@ -14,17 +15,24 @@ func main() {
 	}
 
 	app.Action = func(ctx *cli.Context) error {
-		fmt.Print("Welcome goeepL")
-		fmt.Print(ctx.Args().Get(0))
+		err := getApiKey()
+		if err != nil {
+			return err
+		}
 		return nil
 	}
 
-	app.Run(os.Args)
+	err := app.Run(os.Args)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
-//func getApiKey() string {
-//	key := os.Getenv("DEEPL_API_KEY")
-//	if key == "" {
-//		return nil
-//	}
-//}
+func getApiKey() error {
+	key := os.Getenv("DEEPL_TOKEN")
+	if len(key) == 0 {
+		return fmt.Errorf("Error: %s", "DEEPL_TOKEN not found ")
+	}
+	fmt.Print(key)
+	return nil
+}
